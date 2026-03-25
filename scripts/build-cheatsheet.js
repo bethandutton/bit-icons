@@ -532,4 +532,5 @@ EXPRESS OR IMPLIED.</code></pre>
 </html>`;
 
 fs.writeFileSync(path.join(distDir, 'cheatsheet.html'), html);
+fs.writeFileSync(path.join(distDir, 'index.html'), html);
 console.log(`Cheat sheet generated: ${displayCount} icons, v${version}, built ${buildDate}`);
