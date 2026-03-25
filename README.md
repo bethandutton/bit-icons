@@ -1,6 +1,6 @@
 # bit-icons
 
-A free, open-source dot-grid icon library. 215+ pixel-perfect icons rendered as square dots on a 7x7 grid.
+A free, open-source dot-grid icon library. 215+ pixel-perfect icons rendered as portrait rectangles on a 7x7 grid, with frame-based animations.
 
 Think Font Awesome, but with a bit-art aesthetic.
 
@@ -72,6 +72,37 @@ console.log(icons.heart);
 | **Navigation** | chevrons, external-link, expand, collapse, sidebar |
 | **Media** | play, pause, stop, mic, headphones, camera |
 
+## Animations
+
+Every icon has a frame-based animation, inspired by old LED and dot-matrix displays. The dot grid stays fixed while individual dots flip between on (black) and off (grey) to create the illusion of movement.
+
+- **Arrows** move across the grid in their direction
+- **Heart** pulses by expanding its dots outward
+- **Bell** bobs up and down
+- **Download** arrow drops toward the line while the line stays still
+- **Lock/Unlock** morph between each other
+- **Settings** rotates around the grid
+
+### Viewing animations
+
+- **Cheatsheet** — Hover over any icon to see its animation
+- **Modal** — Click an icon to open a detail view with a static/animated toggle
+- **Download** — Export any animated icon as a GIF from the modal
+
+### Using animations in your project
+
+Animations are defined as frame arrays in `src/animations.js`. Each frame is a 7x7 grid of 0s and 1s, just like the icon definitions. To animate an icon, cycle through the frames and update which dots are "on" at each step.
+
+```js
+import icons from 'bit-icons';
+
+// The base icon grid
+const heart = icons.heart;
+// heart[row][col] === 1 means that dot is filled
+```
+
+For the animation frame data, see `src/animations.js` which exports a `getAnimation(name)` function returning `{ frames, speed }`.
+
 ## Customization
 
 ### Sizing
@@ -97,13 +128,13 @@ Icons inherit the current text `color`:
 
 Browse all icons with search, copy-to-clipboard, and SVG download:
 
-Open `dist/cheatsheet.html` or visit the [live cheatsheet](#) after deploying.
+Visit the [live cheatsheet](https://bit-icons.vercel.app/) or open `dist/cheatsheet.html` locally.
 
 ## Building from Source
 
 ```bash
 # Install (no dependencies needed)
-git clone https://github.com/user/bit-icons.git
+git clone https://github.com/bethandutton/bit-icons.git
 cd bit-icons
 
 # Build everything
@@ -130,7 +161,7 @@ exports.myicon = [
 ];
 ```
 
-- `1` = filled square, `0` = empty (background dot at 10% opacity)
+- `1` = filled rectangle, `0` = empty (background dot at 15% opacity)
 - Corner positions `[0,0]`, `[0,6]`, `[6,0]`, `[6,6]` are excluded from rendering
 - Run `npm run build:all` after adding
 
@@ -140,8 +171,9 @@ Contributions welcome! To add an icon:
 
 1. Fork the repo
 2. Add your icon grid to `src/icons/index.js`
-3. Run `npm run build:all` and check the cheatsheet
-4. Submit a PR
+3. Add an animation for it in `src/animations.js` (see the existing cases for examples)
+4. Run `npm run build:all` and check the cheatsheet
+5. Submit a PR
 
 ## License
 

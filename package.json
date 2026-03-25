@@ -11,9 +11,19 @@
     "build": "node scripts/build.js",
     "build:font": "node scripts/build-font.js",
     "build:cheatsheet": "node scripts/build-cheatsheet.js",
-    "build:all": "npm run build && npm run build:font && npm run build:cheatsheet"
+    "build:all": "npm run build && npm run build:font && npm run build:cheatsheet",
+    "test": "node tests/test.js"
   },
-  "keywords": ["icons", "pixel-art", "dot-grid", "svg"],
+  "keywords": [
+    "icons",
+    "pixel-art",
+    "dot-grid",
+    "svg"
+  ],
   "author": "",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "canvas": "^3.2.2",
+    "gif-encoder-2": "^1.0.5"
+  }
 }
