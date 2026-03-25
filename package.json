@@ -1,0 +1,19 @@
+{
+  "name": "bit-icons",
+  "version": "1.0.0",
+  "description": "A dot-grid pixel icon library",
+  "main": "dist/bit-icons.js",
+  "files": [
+    "dist/",
+    "src/icons/"
+  ],
+  "scripts": {
+    "build": "node scripts/build.js",
+    "build:font": "node scripts/build-font.js",
+    "build:cheatsheet": "node scripts/build-cheatsheet.js",
+    "build:all": "npm run build && npm run build:font && npm run build:cheatsheet"
+  },
+  "keywords": ["icons", "pixel-art", "dot-grid", "svg"],
+  "author": "",
+  "license": "MIT"
+}
