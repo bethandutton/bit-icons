@@ -3,3 +3,7 @@ node_modules/
 *.log
 .env
 .env.*
+CLAUDE.md
+PLAN.md
+.claude/
+cheatsheet/
