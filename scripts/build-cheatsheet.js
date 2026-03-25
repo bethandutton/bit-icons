@@ -41,13 +41,13 @@ const iconCards = iconNames.filter(n => n !== 'bit-icons').map(name => {
 
   // Animatable SVG for the card (every dot has data-r/data-c for JS frame flipping)
   const svg = gridToSvg(icons[name], {
-    bgColor: '#999999', bgOpacity: 0.15, fgColor: '#111111',
+    bgColor: '#999999', bgOpacity: 0.07, fgColor: '#111111',
     animatable: true,
   });
 
   // Clean static SVG for download
   const svgStatic = gridToSvg(icons[name], {
-    bgDots: true, bgColor: '#999999', bgOpacity: 0.15, fgColor: '#000000',
+    bgDots: true, bgColor: '#999999', bgOpacity: 0.07, fgColor: '#000000',
   });
 
   iconDataObj[name] = {
@@ -76,7 +76,7 @@ const heroIcons = heroNames.map(name => {
   if (!icons[name]) return '';
   const anim = getAnimation(name);
   const svg = gridToSvg(icons[name], {
-    bgColor: '#999999', bgOpacity: 0.15, fgColor: '#111111',
+    bgColor: '#999999', bgOpacity: 0.07, fgColor: '#111111',
     animatable: true,
   });
   const animAttr = anim ? ' data-anim="true"' : '';
@@ -712,7 +712,7 @@ EXPRESS OR IMPLIED.</code></pre>
     let toastTimer;
     let currentFgColour = '#111111';
     const bgColour = '#999999';
-    const bgOpacity = '0.15';
+    const bgOpacity = '0.07';
 
     // Colour picker — changes all foreground rects, keeps bg grey
     colourPicker.addEventListener('input', (e) => {
@@ -926,17 +926,17 @@ EXPRESS OR IMPLIED.</code></pre>
         for (let r = 0; r < 7; r++) {
           for (let c = 0; c < 7; c++) {
             if ((r===0&&c===0)||(r===0&&c===6)||(r===6&&c===0)||(r===6&&c===6)) continue;
-            const x = 5 + c * 10 - 1.5;
-            const y = 5 + r * 10 - 3.5;
+            const x = c * 7;
+            const y = r * 7;
             const on = frames[0][r][c] === 1;
             if (on) {
-              rects += '<rect x="'+x+'" y="'+y+'" width="3" height="7" fill="'+currentFgColour+'" data-r="'+r+'" data-c="'+c+'"/>';
+              rects += '<rect x="'+x+'" y="'+y+'" width="3" height="5" fill="'+currentFgColour+'" data-r="'+r+'" data-c="'+c+'"/>';
             } else {
-              rects += '<rect x="'+x+'" y="'+y+'" width="3" height="7" fill="'+bgColour+'" opacity="'+bgOpacity+'" data-r="'+r+'" data-c="'+c+'"/>';
+              rects += '<rect x="'+x+'" y="'+y+'" width="3" height="5" fill="'+bgColour+'" opacity="'+bgOpacity+'" data-r="'+r+'" data-c="'+c+'"/>';
             }
           }
         }
-        modalPreview.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 70 70" width="70" height="70">' + rects + '</svg>';
+        modalPreview.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 47" width="45" height="47">' + rects + '</svg>';
       } else {
         modalPreview.innerHTML = data.svg;
       }
@@ -992,14 +992,16 @@ EXPRESS OR IMPLIED.</code></pre>
       const frames = animData[name];
       if (!frames) return;
 
-      const scale = 4; // 70 * 4 = 280px output
+      const scale = 6;
       const gridSize = 7;
-      const colSpacing = 10;
-      const rowSpacing = 10;
+      const colSpacing = 7;
+      const rowSpacing = 7;
       const dotW = 3;
-      const dotH = 7;
-      const viewSize = 70;
-      const imgSize = viewSize * scale;
+      const dotH = 5;
+      const viewW = 45;
+      const viewH = 47;
+      const imgW = viewW * scale;
+      const imgH = viewH * scale;
 
       const excluded = new Set(['0,0','0,6','6,0','6,6']);
 
@@ -1012,11 +1014,11 @@ EXPRESS OR IMPLIED.</code></pre>
       }
       const bgRgb = hexToRgb(modalBgColour);
       const gridRgb = hexToRgb(modalGridColour);
-      // Blend grid colour with bg at 15% opacity
+      // Blend grid colour with bg at 7% opacity
       const blendedGrid = [
-        Math.round(gridRgb[0] * 0.15 + bgRgb[0] * 0.85),
-        Math.round(gridRgb[1] * 0.15 + bgRgb[1] * 0.85),
-        Math.round(gridRgb[2] * 0.15 + bgRgb[2] * 0.85),
+        Math.round(gridRgb[0] * 0.07 + bgRgb[0] * 0.93),
+        Math.round(gridRgb[1] * 0.07 + bgRgb[1] * 0.93),
+        Math.round(gridRgb[2] * 0.07 + bgRgb[2] * 0.93),
       ];
       const fgRgb = hexToRgb(modalFgColour);
       const gifPalette = [...bgRgb, ...blendedGrid, ...fgRgb, 0, 0, 0]; // 4 entries (power of 2)
@@ -1024,24 +1026,18 @@ EXPRESS OR IMPLIED.</code></pre>
       // Render each frame to a pixel array
       const pixelFrames = frames.map(frame => {
         const canvas = document.createElement('canvas');
-        canvas.width = imgSize;
-        canvas.height = imgSize;
+        canvas.width = imgW;
+        canvas.height = imgH;
         const ctx = canvas.getContext('2d');
 
-        // Background
         ctx.fillStyle = modalBgColour;
-        ctx.fillRect(0, 0, imgSize, imgSize);
-
-        const offsetX = colSpacing / 2;
-        const offsetY = rowSpacing / 2;
+        ctx.fillRect(0, 0, imgW, imgH);
 
         for (let r = 0; r < gridSize; r++) {
           for (let c = 0; c < gridSize; c++) {
             if (excluded.has(r+','+c)) continue;
-            const cx = offsetX + c * colSpacing;
-            const cy = offsetY + r * rowSpacing;
-            const x = (cx - dotW / 2) * scale;
-            const y = (cy - dotH / 2) * scale;
+            const x = c * colSpacing * scale;
+            const y = r * rowSpacing * scale;
             const w = dotW * scale;
             const h = dotH * scale;
 
@@ -1051,7 +1047,7 @@ EXPRESS OR IMPLIED.</code></pre>
               ctx.globalAlpha = 1;
             } else {
               ctx.fillStyle = modalGridColour;
-              ctx.globalAlpha = 0.15;
+              ctx.globalAlpha = 0.07;
             }
             ctx.fillRect(Math.round(x), Math.round(y), Math.round(w), Math.round(h));
           }
@@ -1059,8 +1055,8 @@ EXPRESS OR IMPLIED.</code></pre>
         ctx.globalAlpha = 1;
 
         // Get pixel data and find closest palette colour
-        const imageData = ctx.getImageData(0, 0, imgSize, imgSize);
-        const pixels = new Array(imgSize * imgSize);
+        const imageData = ctx.getImageData(0, 0, imgW, imgH);
+        const pixels = new Array(imgW * imgH);
         for (let i = 0; i < pixels.length; i++) {
           const pr = imageData.data[i * 4];
           const pg = imageData.data[i * 4 + 1];
@@ -1077,7 +1073,7 @@ EXPRESS OR IMPLIED.</code></pre>
         return pixels;
       });
 
-      const gifBytes = encodeGIF(pixelFrames, imgSize, imgSize, 300, gifPalette);
+      const gifBytes = encodeGIF(pixelFrames, imgW, imgH, 300, gifPalette);
       const blob = new Blob([gifBytes], { type: 'image/gif' });
       callback(blob);
     }

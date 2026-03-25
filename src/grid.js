@@ -9,10 +9,10 @@
 
 const GRID_SIZE = 7;
 const DOT_WIDTH = 3;      // rectangle width
-const DOT_HEIGHT = 7;     // rectangle height (tall portrait rectangles)
-const COL_SPACING = 10;   // horizontal center-to-center
-const ROW_SPACING = 10;   // vertical center-to-center
-const BG_DOT_OPACITY = 0.15;
+const DOT_HEIGHT = 5;     // rectangle height
+const COL_SPACING = 7;    // horizontal center-to-center
+const ROW_SPACING = 7;    // vertical center-to-center
+const BG_DOT_OPACITY = 0.07;
 
 // Corner positions to exclude (top-left, top-right, bottom-left, bottom-right)
 const EXCLUDED = new Set([
@@ -45,13 +45,8 @@ function gridToSvg(grid, options = {}) {
     animatable = false,
   } = options;
 
-  const viewW = size * colSpacing;
-  const viewH = size * rowSpacing;
-  const viewSize = Math.max(viewW, viewH);
-  const offsetX = colSpacing / 2 + (viewSize - viewW) / 2;
-  const offsetY = rowSpacing / 2 + (viewSize - viewH) / 2;
-  const halfW = dotWidth / 2;
-  const halfH = dotHeight / 2;
+  const viewW = (size - 1) * colSpacing + dotWidth;
+  const viewH = (size - 1) * rowSpacing + dotHeight;
 
   let rects = '';
 
@@ -59,14 +54,11 @@ function gridToSvg(grid, options = {}) {
     for (let col = 0; col < size; col++) {
       if (isExcluded(row, col)) continue;
 
-      const cx = offsetX + col * colSpacing;
-      const cy = offsetY + row * rowSpacing;
-      const x = cx - halfW;
-      const y = cy - halfH;
+      const x = col * colSpacing;
+      const y = row * rowSpacing;
       const filled = grid[row]?.[col] === 1;
 
       if (animatable) {
-        // Every position gets a rect with data attributes for JS frame animation
         const dataAttrs = ` data-r="${row}" data-c="${col}"`;
         if (filled) {
           rects += `<rect x="${x}" y="${y}" width="${dotWidth}" height="${dotHeight}" fill="${fgColor}"${dataAttrs}/>`;
@@ -74,7 +66,6 @@ function gridToSvg(grid, options = {}) {
           rects += `<rect x="${x}" y="${y}" width="${dotWidth}" height="${dotHeight}" fill="${bgColor}" opacity="${bgOpacity}"${dataAttrs}/>`;
         }
       } else {
-        // Standard mode: only render filled or bg dots as requested
         if (filled) {
           rects += `<rect x="${x}" y="${y}" width="${dotWidth}" height="${dotHeight}" fill="${fgColor}"/>`;
         } else if (bgDots) {
@@ -84,7 +75,7 @@ function gridToSvg(grid, options = {}) {
     }
   }
 
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${viewSize} ${viewSize}" width="${viewSize}" height="${viewSize}">${rects}</svg>`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${viewW} ${viewH}" width="${viewW}" height="${viewH}">${rects}</svg>`;
 }
 
 /**
@@ -99,21 +90,16 @@ function gridToPath(grid, options = {}) {
     rowSpacing = ROW_SPACING,
   } = options;
 
-  const viewW = size * colSpacing;
-  const viewH = size * rowSpacing;
-  const viewSize = Math.max(viewW, viewH);
-  const offsetX = colSpacing / 2 + (viewSize - viewW) / 2;
-  const offsetY = rowSpacing / 2 + (viewSize - viewH) / 2;
-  const halfW = dotWidth / 2;
-  const halfH = dotHeight / 2;
+  const viewW = (size - 1) * colSpacing + dotWidth;
+  const viewH = (size - 1) * rowSpacing + dotHeight;
   let path = '';
 
   for (let row = 0; row < size; row++) {
     for (let col = 0; col < size; col++) {
       if (isExcluded(row, col)) continue;
       if (grid[row]?.[col] === 1) {
-        const x = offsetX + col * colSpacing - halfW;
-        const y = offsetY + row * rowSpacing - halfH;
+        const x = col * colSpacing;
+        const y = row * rowSpacing;
         path += `M${x},${y}h${dotWidth}v${dotHeight}h-${dotWidth}z`;
       }
     }
